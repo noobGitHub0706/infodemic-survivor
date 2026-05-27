@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 const TECHNIQUE_COLORS = {
   fear: '#f4212e', authority: '#7856ff',
@@ -23,13 +23,25 @@ const TECHNIQUE_SHORT = {
   fabricated_evidence: 'FABRICATED EVIDENCE', testimonial: 'TESTIMONIAL', social_proof: 'SOCIAL PROOF',
 }
 
-export default function ResultScreen({ state, rank, accuracy, weakestKey, weakestLabel, onRetry }) {
+export default function ResultScreen({ state, rank, accuracy, weakestKey, weakestLabel, onRetry, nextStepUrl }) {
   const { score, maxCombo, hp, followers, techniqueAccuracy, answers, enemyFollowersStolen } = state
   const totalAnswered = answers.length
 
   const wrongPosts = answers
     .filter(a => !a.isCorrect && a.postText)
     .slice(0, 3)
+
+  const [countdown, setCountdown] = useState(nextStepUrl ? 3 : null)
+
+  useEffect(() => {
+    if (!nextStepUrl) return
+    if (countdown <= 0) {
+      window.location.href = nextStepUrl
+      return
+    }
+    const t = setTimeout(() => setCountdown(c => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [countdown, nextStepUrl])
 
   const handleShare = () => {
     const text = `INFODEMIC SURVIVOR\nRank: ${rank.letter} — ${rank.name}\n正解率: ${accuracy}% | Score: ${score}\n${weakestLabel ? `弱点: ${weakestLabel}` : ''}`
@@ -130,6 +142,17 @@ export default function ResultScreen({ state, rank, accuracy, weakestKey, weakes
         <button className="btn-primary" onClick={handleShare}>SHARE</button>
         <button className="btn-secondary" onClick={onRetry}>RETRY</button>
       </div>
+
+      {nextStepUrl && (
+        <div className="result-screen__next-step">
+          <button className="result-screen__next-btn" onClick={() => { window.location.href = nextStepUrl }}>
+            今すぐ次のステップへ →
+          </button>
+          <div className="result-screen__next-note">
+            {countdown > 0 ? `${countdown}秒後に自動で移動します` : '移動中...'}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -83,6 +83,7 @@ function initialState() {
     shieldCount: 0,
 
     dayResults: { correct: 0, total: 0, hpStart: 100, hpEnd: 100, techniquesLearned: [] },
+    cardSelections: [],
     gameOverDay: null,
     retryCount: 0,
     day5PerfectClear: false,
@@ -228,7 +229,16 @@ function reducer(state, action) {
         }
       }
 
-      const newAnswers = answer ? [...answers, answer] : answers
+      const newAnswers = answer ? [...answers, {
+        ...answer,
+        day: isTutorial ? 0 : day,
+        isTutorial,
+        hpBefore: hp,
+        hpAfter: newHp,
+        scoreBefore: score,
+        scoreAfter: newScore,
+        comboCount: combo,
+      }] : answers
 
       const newDayResults = {
         ...dayResults,
@@ -297,6 +307,11 @@ function reducer(state, action) {
         .filter(c => c.effect?.type === 'combo_start')
         .reduce((sum, c) => sum + (c.effect.value ?? 0), 0)
 
+      const newCardSelections = [
+        ...state.cardSelections,
+        { afterDay: state.day, selectedCardId: card.id },
+      ]
+
       const nextDay = state.day + 1
       return {
         ...state,
@@ -304,6 +319,7 @@ function reducer(state, action) {
         hp: newHp,
         shieldCount: newShieldCount,
         combo: comboStart,
+        cardSelections: newCardSelections,
         screen: 'playing',
         day: nextDay,
         postIndex: 0,
