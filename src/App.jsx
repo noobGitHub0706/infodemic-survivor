@@ -12,7 +12,7 @@ import ResultScreen from './game/ResultScreen.jsx'
 import Day5Clear from './game/Day5Clear.jsx'
 
 const PARTICIPANT_ID = new URLSearchParams(window.location.search).get('id')
-const NEXT_STEP_BASE_URL = import.meta.env.VITE_RESEARCH_PORTAL_URL
+const NEXT_STEP_BASE_URL = import.meta.env.VITE_RESEARCH_PORTAL_URL || 'https://noobgithub0706.github.io/reserch-portal/'
 
 export default function App() {
   const game = useGameState()
@@ -106,6 +106,9 @@ export default function App() {
   const nextStepUrl = PARTICIPANT_ID && NEXT_STEP_BASE_URL
     ? `${NEXT_STEP_BASE_URL}/?id=${PARTICIPANT_ID}&phase=postMediator`
     : null
+
+  console.log('[Redirect] participantId:', PARTICIPANT_ID)
+  console.log('[Redirect] portalUrl:', NEXT_STEP_BASE_URL)
 
   switch (state.screen) {
     case 'title':
