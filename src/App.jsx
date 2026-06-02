@@ -104,7 +104,7 @@ export default function App() {
   }, [state])
 
   const nextStepUrl = PARTICIPANT_ID && NEXT_STEP_BASE_URL
-    ? `${NEXT_STEP_BASE_URL}/?id=${PARTICIPANT_ID}&phase=postMediator`
+    ? `${NEXT_STEP_BASE_URL}/?id=${PARTICIPANT_ID}&phase=postTest`
     : null
 
   console.log('[Redirect] participantId:', PARTICIPANT_ID)
